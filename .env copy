@@ -1,6 +1,0 @@
-# Database Configuration
-dbserver='mysqlserver'
-dbhost='localhost'
-dbpassword='Abdec@90'
-dbuser='root'
-database='market'
