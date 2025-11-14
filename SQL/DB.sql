@@ -39,11 +39,31 @@ insert into Sector values(12,'Consumer Staples',null);
 insert into Sector values(13,'Utilities',null);
 insert into Sector values(14,'Mining and Minirals',null);
 
+create table StockStatus(
+	StatusID int1 primary key,
+    Status varchar(25)
+);
+insert into StockStatus values(1,'Listed');
+insert into StockStatus values(2,'Temporarily Suspended');
+
+create table TradingStatus(
+	TradingStatusID int1 primary key,
+    TradingStatus varchar(20)
+);
+insert into TradingStatus values(1,'Active');
+insert into TradingStatus values(2,'stockSuspended');
+
+
 create table stock(
 	ISIN varchar(20) primary key,
     StockName varchar(50),
     SectorId INT4,
-    foreign key (SectorId) references Sector(SectorId)
+    ListingDate Date,
+    stock_status int1,
+    trading_status int1,
+    foreign key (SectorId) references Sector(SectorId),
+    foreign key (stock_status) references StockStatus(StatusID),
+    foreign key (trading_status) references TradingStatus(TradingStatusID)
 );
 
 create table StockExchange_StockCode(
@@ -54,7 +74,6 @@ create table StockExchange_StockCode(
     foreign key (ISIN) references stock(ISIN),
     foreign key (StockExchange) references StockExchange(CODE)
 );
-use market;
 
 create table StockDailyUpdate(
 	StockExchange VARCHAR(5) NOT NULL,
@@ -70,3 +89,77 @@ create table StockDailyUpdate(
     FOREIGN KEY (StockExchange) 
         REFERENCES StockExchange_StockCode(StockExchange)
 );
+use market;
+# alter table StockDailyUpdate drop foreign key stockdailyupdate_ibfk_1;
+# alter table stockexchange_stockcode drop foreign key stockexchange_stockcode_ibfk_2;
+
+create table Dividends(
+	ISIN varchar(20),
+    RecordDate date not null,
+    dividend float,
+    PRIMARY KEY (ISIN, RecordDate),
+    FOREIGN KEY (ISIN) 
+        REFERENCES stock(ISIN)
+);
+
+# "alter table DealType modify column description varchar(5);"
+create table DealType(
+	ID varchar(1) primary key,
+    description varchar(5)
+);
+
+insert into DealType values('B','Buy');
+insert into DealType values('S','Sell');
+
+create table client(
+	client_id varchar(10) primary key,
+    name varchar(150)
+);
+
+/*
+SELECT TABLE_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE REFERENCED_TABLE_NAME = 'BlockDeal';
+*/
+
+-- check table blockdeal;
+
+-- SHOW TABLE STATUS LIKE 'blockdeal';
+-- SHOW VARIABLES LIKE 'datadir';
+-- drop table client;
+-- drop table BlockDeal;
+-- SHOW ENGINE INNODB STATUS \G;
+create table BlockDeal(
+	UUID varchar(36),
+    ISIN varchar(20),
+    DealDate date,
+    StockExchange varchar(5),
+    Client varchar(10),
+    DealType varchar(1),
+    Quantity int4,
+    price float,
+    Primary Key(UUID),
+    foreign key (ISIN) references stock(ISIN),
+    foreign key (StockExchange) references StockExchange(CODE),
+    foreign key (Client) references client(client_id),
+    foreign key (DealType) references DealType(ID)
+);
+-- alter table BlockDeal add column UUID varchar(36) first;
+-- alter table blockdeal DROP PRIMARY KEY, 
+-- add primary key (UUID);
+-- drop table blockdeal;
+-- (UUID, ISIN, DealDate, StockExchange, Client, DealType);
+
+
+
+
+SET GLOBAL net_read_timeout=600;
+SET GLOBAL net_write_timeout=600;
+SET GLOBAL wait_timeout=600;
+SET GLOBAL max_allowed_packet=1073741824;  -- 1 GB
+
+SET GLOBAL net_read_timeout = 600;
+SET GLOBAL net_write_timeout = 600;
+SET GLOBAL interactive_timeout = 600;
+SET GLOBAL wait_timeout = 600;
+SET GLOBAL innodb_lock_wait_timeout = 600;
