@@ -1,0 +1,19 @@
+@startuml
+left to right direction
+
+actor "User\n(Analyst/Researcher)" as User
+actor "Data Source\n(yFinance, NSE APIs)" as API
+
+User --> (Fetch Historical Stock Data)
+User --> (Upload CSV Data)
+User --> (Preprocess Data)
+User --> (Train Prediction Model)
+User --> (Predict Next-Day Price)
+User --> (View Prediction Results)
+
+(Fetch Historical Stock Data) <-- API
+
+(Train Prediction Model) --> (Store Data & Models)
+(Predict Next-Day Price) --> (Store Predictions)
+
+@enduml

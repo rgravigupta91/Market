@@ -24,6 +24,12 @@ create table Sector(
     foreign key (ParentSectorId) references Sector(SectorId)
 );
 
+Create table Industry(
+	IndustryId int2 primary key,
+    Name varchar(100),
+    SectorId int1
+);
+
 insert into Sector values(1,'Durable Goods',null);
 insert into Sector values(2,'Non-Durable Goods',null);
 insert into Sector values(3,'Materials',null);
@@ -144,6 +150,12 @@ create table BlockDeal(
     foreign key (Client) references client(client_id),
     foreign key (DealType) references DealType(ID)
 );
+
+create table BlackListed(
+	ISIN varchar(20)
+);
+
+
 -- alter table BlockDeal add column UUID varchar(36) first;
 -- alter table blockdeal DROP PRIMARY KEY, 
 -- add primary key (UUID);
@@ -163,3 +175,33 @@ SET GLOBAL net_write_timeout = 600;
 SET GLOBAL interactive_timeout = 600;
 SET GLOBAL wait_timeout = 600;
 SET GLOBAL innodb_lock_wait_timeout = 600;
+
+
+
+#   ------------ Views -------------------------------
+create view v_blockdeal as select ISIN, DealDate, sum(Quantity) as quantity, round(avg(price), 2) as price from market.blockdeal where DealType = 'B' group by ISIN, DealDate;
+
+create or replace view v_stockdailyupdate as
+select 
+s.ISIN, 
+s.SectorId, 
+sdu.Date, 
+sdu.open, 
+sdu.high, 
+sdu.low, 
+sdu.close, 
+sdu.volume, 
+sdu.delivery,
+case coalesce(bl.isin, '-')
+when '-' then null
+else 'X' end as BlackListed,
+coalesce(d.dividend, 0) as dividend, 
+coalesce(vbd.quantity, 0) as blockdeal_quantity,
+coalesce(vbd.price, 0) as blockdeal_avg_price
+from market.stock as s
+inner join market.stockexchange_stockcode as sd on s.ISIN = sd.ISIN
+inner join market.stockdailyupdate as sdu on sd.Symbol = sdu.Symbol
+left outer join market.dividends as d on s.ISIN = d.ISIN and sdu.Date = d.RecordDate
+left outer join market.v_blockdeal as vbd on s.ISIN = vbd.ISIN and sdu.Date = vbd.DealDate
+left outer join market.BlackListed as bl on s.ISIN = bl.isin
+where s.ListingDate is not null and s.stock_status = 1 and s.trading_status = 1 and sd.StockExchange = 'NSE';

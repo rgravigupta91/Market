@@ -28,7 +28,7 @@ class RangeParser:
         return pd.DataFrame(columns=RangeTable.model_fields.keys())
     
 class DBConnection:
-    def __init__(self, schema: None):
+    def __init__(self, schema = None):
         load_dotenv()
         if schema is None:
             schema = os.environ['database']
@@ -53,19 +53,22 @@ class DBConnection:
     def execute_query(self, query):
         self.cursor.execute(query)
         results = self.cursor.fetchall()
+        return results
     def get_connection(self):
         return self.connection
 
 
     
 class CRUD(DBConnection):
-    def __init__(self, tablename:str):
-        super().__init__()
+    def __init__(self, tablename:str, schema:str = None):
+        super().__init__(schema=schema)
         self.tablename = tablename
 
-        sql = f"Describe {tablename}"
+        """sql = f"Describe {tablename}"
         self.cursor.execute(sql)
-        results = self.cursor.fetchall()
+        results = self.cursor.fetchall()"""
+
+        results = self.__getstructure()
         
         self.schema = {}
         for row in results:
@@ -74,20 +77,17 @@ class CRUD(DBConnection):
         self.df_schema = pd.DataFrame(results)
         
         self.sql_insert = f"INSERT INTO {tablename} ({', '.join(self.schema.keys())}) values({', '.join(['%s'] * self.df_schema.shape[0])})"
-        self.sql_select = f"Select * from {tablename}"
-        self.sql_update = f"Update {tablename} set {tablename} where {tablename}"
-        self.sql_delete = f"Delete {tablename} where {tablename}"
-
-
-
-    def __getstructure__(self):
+        #self.sql_select = f"Select * from {tablename} where %s"
+        self.sql_update = f"Update {tablename} set {tablename} where %s"
+        self.sql_delete = f"Delete {tablename} where %s"
+    
+    def __getstructure(self):
         # Example query
         sql = "Describe " + self.tablename
         self.cursor.execute(sql)
         results = self.cursor.fetchall()
-        print(results)
-
-
+        return results
+    
     def Create(self, df):
         data = df.values.tolist()
         print(data)
@@ -100,7 +100,11 @@ class CRUD(DBConnection):
         #for row in df.itertuples(index=False): 
         #    self.cursor.execute(self.sql_insert, row)
 
-    def Read(self, data):
+    def Read(self, where:str = None):
+        if where == None:
+            self.sql_select = f"Select * from {self.tablename}"
+        else:
+            self.sql_select = f"Select * from {self.tablename} where {where}"
         self.cursor.execute(self.sql_select)
         df = pd.DataFrame(self.cursor.fetchall(), columns=self.schema.keys())
         return df

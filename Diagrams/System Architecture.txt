@@ -1,0 +1,58 @@
+@startuml
+left to right direction
+
+package "Data Sources" {
+  component "yFinance API"
+  component "NSE Tools"
+  component "NSE India API"
+  component "CSV Upload"
+}
+
+package "Data Acquisition Layer" {
+  component "Data Fetcher"
+}
+
+package "Data Storage Layer" {
+  component "MySQL Database"
+}
+
+package "Processing Layer" {
+  component "Data Preprocessing"
+  component "Feature Engineering"
+}
+
+package "Model Layer" {
+  component "LSTM Model"
+  component "CNN-LSTM Model"
+  component "GRU Model"
+  component "Transformer Model"
+}
+
+package "Prediction & Visualization Layer" {
+  component "Prediction Engine"
+  component "Dashboard & Charts"
+}
+
+"yFinance API" --> "Data Fetcher"
+"NSE Tools" --> "Data Fetcher"
+"NSE India API" --> "Data Fetcher"
+"CSV Upload" --> "Data Fetcher"
+
+"Data Fetcher" --> "MySQL Database"
+
+"MySQL Database" --> "Data Preprocessing"
+"Data Preprocessing" --> "Feature Engineering"
+
+"Feature Engineering" --> "LSTM Model"
+"Feature Engineering" --> "CNN-LSTM Model"
+"Feature Engineering" --> "GRU Model"
+"Feature Engineering" --> "Transformer Model"
+
+"LSTM Model" --> "Prediction Engine"
+"CNN-LSTM Model" --> "Prediction Engine"
+"GRU Model" --> "Prediction Engine"
+"Transformer Model" --> "Prediction Engine"
+
+"Prediction Engine" --> "Dashboard & Charts"
+
+@enduml

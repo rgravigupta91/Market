@@ -1,0 +1,671 @@
+\documentclass[12pt]{report}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\begin{center}
+\includegraphics[width=2cm]{pes_logo.png} \\[0.5cm]
+\textbf{\Large Dissertation on}\\[1cm]
+\textbf{\Huge ``DeepTicker: Stock Price Prediction using Deep Learning and Sentiment Analysis''}\\[1cm]
+
+Submitted in partial fulfilment of the requirements for the award of degree of\\[1cm]
+\textbf{\Large Master of Technology in}\\[1cm]
+\textbf{\Large Data Science \& Machine Learning}\\[1cm]
+\textbf{UE20CS971 – Project Phase - 1}\\[1cm]
+
+\textbf{Submitted by:}\\
+\textbf{Ravi Kumar Gupta}\\
+\textbf{PES2PGE24DS043}\\[1cm]
+
+Under the guidance of\\
+Dr. Sagarika Bohra\\
+Prof. Data Science, PES University\\[0.5cm]
+
+Sept - Dec 2025\\[0.5cm]
+
+DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\\
+FACULTY OF ENGINEERING\\
+PES UNIVERSITY\\[1cm]
+(Established under Karnataka Act No. 16 of 2013)\\
+Electronic City, Hosur Road, Bengaluru – 560 100, Karnataka, India
+\end{center}
+
+\newpage
+
+\section*{Certificate}
+
+This is to certify that the dissertation entitled ``DeepTicker: Stock Price Prediction using Deep Learning and Sentiment Analysis'' is a bonafide work carried out by \textbf{Student Name (PES2PGE24DS043)} in partial fulfilment for the completion of Fourth Semester Project Phase - 2 (UE20CS971) in the Program of Study - Master of Technology in Computer Science and Engineering under the rules and regulations of PES University, Bengaluru during the period Sept. 2025 – Dec. 2025.
+
+\vspace{2cm}
+
+\begin{flushright}
+Dr. Sagarika Bohra\\
+Prof. DSML
+\end{flushright}
+
+\newpage
+
+\section*{Declaration}
+
+We hereby declare that the Project Phase - 1 entitled ``DeepTicker: Stock Price Prediction using Deep Learning and Sentiment Analysis`` has been carried out under the guidance of Dr. Guide Name, Department of CSE, and submitted in partial fulfilment of the course requirements for the award of the degree of Master of Technology in Computer Science and Engineering of PES University, Bengaluru during the academic semester September – December 2025.
+
+\newpage
+
+\section*{Acknowledgement}
+
+I would like to express my gratitude to Dr. Sagarika Bohra, Department of Data Science and Machine Learning, PES University, for her continuous guidance and support. I am also thankful to the project coordinators for their help throughout the process. I take this opportunity to thank the Chairperson of the Department of Data Science and Machine Learning, PES University, for the support and guidance. I am grateful to Dr. B.K. Keshavan, Dean of Faculty, and the university leadership for the opportunities provided. Finally, I extend heartfelt thanks to my family and friends for their constant support.
+
+\newpage
+
+\section*{Abstract}
+
+% Insert your abstract content here
+This project aims to predict the next-day closing price of NSE-listed stocks using advanced deep learning techniques. The data is sourced from NSETools, NSE India APIs, yFinance, and custom CSV uploads, ensuring a diverse and reliable dataset. In Phase 1, an LSTM-based model is developed to capture temporal dependencies in historical price movements. In Phase 2, the model’s accuracy will be enhanced using transformer-based architectures and other advanced neural network approaches. The final output will be an interactive dashboard that visualizes predictions, trends, and performance metrics to support data-driven investment decisions.
+
+\newpage
+
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+\chapter{Introduction}
+
+% Replace this text with your full Introduction content from the Word file.
+
+%This chapter introduces the problem domain, the motivation for the project, the problem statement, the scope of the project, and the objectives to be achieved. It also provides an overview of the methodology followed and the structure of the report.
+
+\section{Problem Statement}
+\begin{itemize}
+  \item Stock market is a complex and dynamic system that plays a crucial role in the global economy.
+  \item Stock Prices are influenced by many factors like, economic indicator, market sentiment, geopolitical events, company-specific news, environmental events such as natural disasters, epidemics and  pandemics, political tensions, wars, fiscal policies etc.
+  \item Accurate prediction of stock prices is of immense importance to investors, financial analysts, and policy makers.
+  \item Successful prediction can lead to significant financial gains, informed decision making, and improved economic stability.
+\end{itemize}
+
+
+\section{Objectives}
+% List your project objectives here.
+\subsection{Primary Objective}
+\begin{itemize}
+    \item To Design and develop a deep learning-based framework for predicting the next-day closing price of stocks using historical market data.
+\end{itemize}
+\subsection{Secondary Objective}
+\begin{itemize}
+    \item To Collect and preprocess historical OHLCV data from multiple financial data sources such as NSE APIs, Yahoo Finance, and CSV datasets.
+    \item To perform extensive feature engineering using technical indicators like moving averages, RSI, volatility, and volume-based metrics.
+    \item To develop and train an LSTM-based time series forecasting model for stock price prediction.
+    \item  To evaluate the model performance using standard metrics such as RMSE, MAE, and $R^{2}$ score.
+    \item To compare the performance of LSTM with other deep learning architectures such as GRU, CNN-LSTM, and Transformer-based models.
+    \item To analyze the impact of different features on prediction accuracy.
+    \item To visualize predicted vs actual stock prices through an interactive dashboard.
+\end{itemize}
+
+\section{Scope of the Project}
+% Describe the scope of your project here.
+\begin{itemize}
+    \item The project focuses on predicting the next-day closing price of selected stocks using historical market data.
+
+    \item It utilizes time-series data such as Open, High, Low, Close, and Volume obtained from reliable sources like NSE and Yahoo Finance.
+
+    \item Advanced deep learning models, primarily LSTM, are implemented, with scope for experimenting with Transformer-based architectures to improve prediction accuracy.
+
+    \item The project is limited to short-term price forecasting and does not include live trading execution or portfolio optimization.
+\end{itemize}
+
+
+
+%\section{Organization of the Report}
+% Briefly describe chapter-wise organization.
+
+\newpage
+
+\chapter{Literature Survey}
+
+% Replace with your literature survey content.
+
+\section{Existing Systems}
+% Summarize existing systems or related works.
+With rapid technological advancements, financial markets have become a cornerstone of the global economy and play a vital role in wealth distribution. Among these, the stock market serves as a critical component of the global financial system and is widely regarded as a reliable indicator of a nation’s economic stability. \cite{11115642}
+
+Recent studies highlight the growing importance of deep learning techniques—particularly Long Short-Term Memory (LSTM), Convolutional Neural Networks (CNN), and Gated Recurrent Units (GRU)—in stock market prediction tasks due to their strong capability to model sequential data and capture complex temporal patterns present in financial time series data \cite{11072109}. Furthermore, hybrid architectures such as CNN–LSTM and BiLSTM–GRU have demonstrated superior predictive performance by effectively combining feature extraction and sequence learning mechanisms \cite{11115642} \cite{sonani2025stockpricepredictionusing}.
+
+Metric-driven and data-centric approaches have significantly transformed the domain of stock price forecasting, prompting extensive research into various machine learning and deep learning models. In the proposed study, multiple predictive models have been reviewed to evaluate their effectiveness in stock market price prediction. This comparative analysis aids in identifying the most suitable neural network architectures for forecasting tasks and provides deeper insights into the development of highly accurate hybrid models.
+
+Stock price prediction is predominantly approached as a time series forecasting problem. Existing research in this area can broadly be classified into two major categories. The first category focuses on LSTM-centric architectures, where LSTM is integrated with complementary techniques such as CNN, GRU, and Graph Neural Networks (GNN), along with advanced methodologies including Variational Mode Decomposition (VMD), Triangular Maximally Filtered Graphs (TMFG) \cite{Zhang2025}, and Self-Supervised Attention Mechanisms (SSAM). Additionally, several studies incorporate sentiment analysis to capture market psychology and investor sentiment for enhanced predictive accuracy \cite{10.1007/978-981-96-8197-6_30}.
+
+The second category emphasizes transformer-based models as the core architecture, often combined with CNNs, GNNs, Time2Vec \cite{10920805} \cite{Yao_2025} and advanced variants such as Mamba or Bidirectional Mamba models \cite{10888749}. Research under this category has been conducted across multiple global stock exchanges, achieving exceptionally high prediction accuracies, in some cases exceeding 98\% \cite{11115642}. However, despite extensive studies on international markets, limited research explicitly reports accuracy benchmarks for stock price prediction within the Indian stock market, particularly for the BSE and NSE exchanges.
+
+\section{Limitations of Existing Systems}
+% List limitations and gaps.
+Despite significant advancements in stock price prediction using machine learning and deep learning techniques, existing systems still face several limitations that restrict their effectiveness and general applicability.
+
+Most traditional statistical models such as ARIMA and linear regression assume linear relationships and stationarity in financial time-series data. However, stock market data is inherently non-linear, noisy, and highly volatile, making these models insufficient for accurate long-term predictions.
+
+Although deep learning models such as LSTM and GRU have improved prediction performance by capturing temporal dependencies, many existing systems rely on a single model architecture, which limits their ability to generalize across different market conditions. Additionally, several studies focus on short-term historical datasets and do not adequately evaluate model robustness across extended time periods.
+
+Another major limitation is the lack of comprehensive feature engineering. Many systems depend solely on OHLC data without incorporating advanced technical indicators or market behavior patterns. Furthermore, sentiment analysis-based approaches often rely on limited or unstructured data sources, which may introduce bias and inconsistency.
+
+Transformer-based models have demonstrated high accuracy in global markets; however, their application in the Indian stock market (BSE and NSE) remains limited. Existing studies often lack comparative analysis between recurrent and attention-based models under identical datasets and evaluation metrics. Additionally, most systems do not support real-time scalability, multi-stock training, or automated retraining mechanisms.
+
+\section{Proposed Solution}
+% Describe your proposed approach briefly.
+To overcome the limitations of existing systems, this project proposes a hybrid deep learning-based stock price prediction framework designed specifically for the Indian stock market.
+
+The proposed system integrates multiple data sources, including NSE Tools, NSE India APIs, yFinance, and CSV-based historical datasets, ensuring data diversity and reliability. A comprehensive preprocessing pipeline is implemented to clean, normalize, and engineer features such as moving averages, volatility indicators, and volume-based metrics.
+
+In the first phase, an LSTM-based model is developed to capture temporal dependencies in stock price movements. In the second phase, advanced architectures such as CNN-LSTM, GRU, and Transformer models with attention mechanisms are implemented to improve prediction accuracy and capture long-range dependencies. A comparative evaluation is conducted to identify the most effective model for next-day stock price prediction.
+
+The proposed system is designed to support multiple stocks using a unified framework and enables scalable model training and evaluation. Prediction results are stored and visualized through interactive dashboards, aiding in analytical decision-making. By combining hybrid deep learning models, extensive feature engineering, and market-specific data, the proposed solution aims to provide a robust and accurate stock price prediction system for the Indian financial market.
+\newpage
+
+\chapter{System Requirements Specification}
+
+\section{Hardware Requirements}
+% Bullet points for hardware specs.
+\begin{itemize}
+    \item \textbf{Processor:}  \newline
+    Intel Core i5 / AMD Ryzen 5 or higher
+    \item \textbf{RAM:} \newline
+    Minimum 8 GB (16GB recommended for faster training)
+    \item \textbf{Storage:} \newline
+    Minimum 50 GB free disk space (for datasets, models, logs)
+    \item \textbf{GPU (Optional but Recommended):} \newline
+    NVIDIA GPU with CUDA support (for faster deep learning training)
+    \item \textbf{Internet Connectivity:} \newline
+    Required for fetching real-time and historucal stock market data
+\end{itemize}
+
+\section{Software Requirements}
+% Bullet points for software specs.
+The following software tools and libraries are required:
+\begin{itemize}
+    \item \textbf{Operating System}: \newline
+    Windows 10 (or later)/ Linux (Ubuntu 20.04 or later)
+    \item \textbf{Programming Language:} \newline
+    Python 3.8 or higher
+    \item \textbf{Database:} \newline
+    MySQL / PostgreSQL (for storing historical stocj data)
+    \item \textbf{Library and Frameworks:} \newline
+    \begin{itemize}
+        \item Numpy
+        \item Pandas
+        \item Matplotlib / Seaborn
+        \item Scikit-learn
+        \item TensorFlow / Pytorch
+        \item Keras
+        \item yFinance / NSE Tools
+    \end{itemize}
+    \item \textbf{Development Tools:} \newline
+    \begin{itemize}
+        \item Jupyter Notebook
+        \item Visual Studio Code / PyCharm
+    \end{itemize}
+    \item \textbf{Version Control:} \newline
+    \begin{itemize}
+        \item Git
+    \end{itemize}
+\end{itemize}
+
+
+
+
+\section{Functional Requirements}
+% List system functionalities.
+\begin{enumerate}
+    \item The system shall collect historical stock market data from multiple sources such as yFinance, NSE tools, and CSV uploads.
+    \item The system shall preprocess and clean the stock market data.
+    \item The system shall perform feature engineering (moving averages, RSI, volatility, etc.).
+    \item The system shall train deep learning models such as LSTM, CNN-LSTM, GRU, and Transformer-based models.
+    \item The system shall predict the next-day closing price of selected stocks.
+    \item The system shall support multiple stocks using a single trained model.
+    \item The system shall store prediction results in a database.
+    \item The system shall visualize historical prices and predicted prices through charts and dashboards.
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+% List non-functional aspects like scalability, usability.
+\textbf{Performance}
+\begin{itemize}
+    \item The system should generate predictions within acceptable time limits.
+    \item Model retraining should be optimized to minimize computation time.
+\end{itemize}
+
+\textbf{Scalability}
+\begin{itemize}
+    \item The system should handle an increasing number of stocks and large datasets.
+    \item The architecture should support future model enhancements.
+\end{itemize}
+
+\textbf{Reliability}
+\begin{itemize}
+    \item The system should handle missing or inconsistent data gracefully.
+    \item Predictions should remain stable across multiple executions.
+\end{itemize}
+
+\textbf{Security}
+\begin{itemize}
+    \item The system should prevent unauthorized access to stored data.
+    \item API credentials and database credentials must be securely stored.
+\end{itemize}
+
+\textbf{Maintainability}
+\begin{itemize}
+    \item The codebase should be modular and well-documented.
+    \item New features and models should be easily integrable.
+\end{itemize}
+
+
+
+\section{Use Case Diagram}
+\textbf{Actors}
+\begin{itemize}
+    \item User (Analyst / Researcher)
+    \item Data Source (yFinance, NSE APIs)
+\end{itemize}
+\newline
+\textbf{Use Cases}
+\begin{enumerate}
+    \item Fetch Historical Stock Data
+    \item Upload CSV Data
+    \item Preprocess Data
+    \item Train Prediction Model
+    \item Predict Stock Prices
+    \item View Prediction Results
+    \item Store Data and Predictions
+\end{enumerate}
+\newline
+\textbf{Interaction Summary}
+\begin{itemize}
+    \item The user initiates data collection.
+    \item The system fetches and processes data.
+    \item The model is trained and generates predictions.
+    \item Results are displayed via charts or dashboards.
+\end{itemize}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Images/Use Case Diagram.png}
+\caption{Use Case Diagram}
+\end{figure}
+\newpage
+
+\chapter{Proposed Methodology}
+
+% Replace with your methodology details.
+
+
+\section{System Architecture}
+The proposed system follows a modular and layered architecture to efficiently handle data collection, preprocessing, model training, and stock price prediction. The architecture is designed to support multiple data sources and deep learning models while ensuring scalability and flexibility.
+
+The system begins with a data acquisition module that gathers historical stock market data from APIs such as yFinance, NSE Tools, NSE India APIs, and user-uploaded CSV files. The collected data is stored in a centralized relational database for further processing.
+
+A data preprocessing and feature engineering module cleans the data, handles missing values, normalizes features, and generates technical indicators such as moving averages and volatility measures. The processed data is then passed to the model training module, which trains deep learning models including LSTM, CNN-LSTM, GRU, and Transformer-based architectures.
+
+Finally, the prediction and visualization module generates next-day stock price predictions and displays historical and predicted values through graphical dashboards, enabling effective analysis and decision support.
+
+\section{Algorithm or Model Description}
+% Provide details of algorithms used (e.g., CNN, LSTM, etc.)
+The core objective of the proposed system is to predict the next-day closing price of stocks using deep learning models capable of capturing temporal dependencies in financial time-series data.
+
+\textbf{LSTM Model} \newline
+Long Short-Term Memory (LSTM) networks are used as the primary model due to their ability to learn long-term dependencies and mitigate the vanishing gradient problem. LSTM processes sequential OHLCV data and captures temporal patterns influencing stock price movements.
+
+\textbf{Hybrid Models} \newline
+
+Hybrid architectures such as CNN-LSTM and GRU-based models are employed to enhance prediction accuracy. CNN layers extract meaningful features from time-series data, while LSTM or GRU layers learn sequential dependencies.
+
+\textbf{Transformer Model} \newline
+In the second phase, Transformer models with attention mechanisms are introduced to capture global dependencies in the data. These models enable parallel processing and improved learning of long-range relationships, potentially outperforming recurrent architectures.
+
+All models are trained using historical stock data and evaluated using performance metrics such as Mean Absolute Error (MAE) and Root Mean Square Error (RMSE).
+
+\section{Workflow Diagram}
+% Include workflow figure if available.
+The workflow of the proposed system follows a sequential pipeline:
+\begin{enumerate}
+    \item Historical stock market data is collected from external APIs and CSV uploads.
+    \item The raw data is validated and stored in a database.
+    \item Data preprocessing is performed to clean, normalize, and engineer features.
+    \item Time-series sequences are created for model training.
+    \item Deep learning models are trained and validated using historical data.
+    \item The trained model predicts the next-day closing price.
+    \item Prediction results are stored and visualized through dashboards.
+\end{enumerate}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{Images/System Architecture.png}
+\caption{System Architecture Diagram}
+\end{figure}
+
+\newpage
+
+
+
+
+
+
+
+
+
+\chapter{Implementation Details}
+
+% Replace with your detailed implementation steps.
+
+%This chapter provides details of the development process, programming languages used, tools and libraries, dataset descriptions, preprocessing steps, model building, and evaluation metrics.
+
+\section{Development Environment}
+% Describe your development setup.
+The proposed system is implemented using modern data science and deep learning tools to ensure efficiency, scalability, and reproducibility.
+\begin{itemize}
+    \item Operating System: \newline
+    Windows 10 / Ubuntu Linux
+
+    \item Programming Language: \newline
+    Python 3.8+
+    
+    \item Development Tools: \newline
+    Jupyter Notebook, Visual Studio Code
+
+    \item Libraries and Frameworks:
+    \begin{itemize}
+        \item NumPy and Pandas for data manipulation
+        \item Matplotlib and Seaborn for data visualization
+        \item Scikit-learn for preprocessing and evaluation
+        \item TensorFlow / Keras for deep learning model implementation
+    \end{itemize}
+
+    \item Database: \newline
+    MySQL for storing historical stock data and predictions
+
+    \item Version Control: \newline
+    Git for source code management
+
+    \item Hardware:
+    \begin{itemize}
+        \item Intel Core i5 or higher
+        \item 8–16 GB RAM
+        \item Optional GPU for accelerated training
+    \end{itemize}
+\end{itemize}
+
+\section{Dataset Description}
+% Include details about the dataset(s) used.
+The dataset used in this project consists of historical stock market data collected from multiple sources to ensure reliability and completeness.
+
+\textbf{Data Sources}
+\begin{itemize}
+    \item NSE Tools
+    \item NSE India APIs
+    \item yFinance
+    \item User-uploaded CSV files
+\end{itemize}
+
+\textbf{Dataset Attributes} \newline
+Each record in the dataset includes the following attributes:
+\begin{itemize}
+    \item Open price
+    \item High price
+    \item Low price
+    \item Close price
+    \item Trading volume
+    \item Delivery quantity (where available)
+    \item Date and stock identifiers (ISIN, symbol, exchange)
+\end{itemize}
+
+
+\textbf{Preprocessing Steps}
+\begin{itemize}
+    \item Removal of duplicate and inconsistent records
+    \item Handling of missing values
+    \item Date alignment across different data sources
+    \item Normalization and scaling of numerical features
+    \item Feature engineering including moving averages and volatility indicators
+\end{itemize}
+The processed dataset is converted into time-series sequences suitable for deep learning models.
+
+
+
+\section{Model Implementation}
+% Describe how the model was implemented.
+The model implementation is carried out in two phases to systematically improve prediction accuracy.\newline
+
+
+\textbf{Phase 1: LSTM Model} \newline
+An LSTM-based neural network is implemented to capture long-term dependencies in stock price movements. The model is trained using sequences of historical OHLCV data and optimized using backpropagation through time.
+
+Several approaches were experimented with using the available dataset. Multiple training iterations were conducted by grouping all stocks together, training individual stocks separately, and organizing them sector-wise. Limiting the dataset to the most recent two years further enhanced the model’s accuracy. Additionally, feature selection techniques were applied based on performance results, leading to the identification and use of only the most relevant features for prediction.
+
+\textbf{Phase 2: Hybrid and Transformer Models} \newline
+To enhance performance, advanced models such as CNN-LSTM, GRU, and Transformer architectures with attention mechanisms are implemented. CNN layers extract local temporal features, while recurrent and attention-based layers capture sequential dependencies and global patterns.\newline
+
+
+\textbf{Training Strategy}
+\begin{itemize}
+    \item Sliding window technique for sequence generation
+    \item Train-validation-test split
+    \item Hyperparameter tuning (epochs, batch size, learning rate)
+    \item Early stopping to prevent overfitting
+\end{itemize}
+
+
+
+
+
+\section{Evaluation Metrics}
+% List the metrics used (Accuracy, F1-score, etc.)
+
+The performance of the proposed stock price prediction models is evaluated using standard regression-based evaluation metrics. These metrics quantify the accuracy of predicted stock prices by comparing them with actual observed values.
+
+\subsection{Mean Squared Error (MSE)}
+Mean Squared Error (MSE) penalizes larger errors by squaring the differences between predicted and actual values.
+
+\begin{equation}
+MSE = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \hat{y}_i \right)^2
+\end{equation}
+
+\subsection{Root Mean Squared Error (RMSE)}
+Root Mean Squared Error (RMSE) represents the square root of MSE and provides the error magnitude in the same units as the predicted variable.
+
+\begin{equation}
+RMSE = \sqrt{MSE}
+\end{equation}
+
+\subsection{Mean Absolute Error (MAE)}
+Mean Absolute Error (MAE) measures the average magnitude of errors between predicted and actual values without considering their direction.
+
+\begin{equation}
+MAE = \frac{1}{n} \sum_{i=1}^{n} \left| y_i - \hat{y}_i \right|
+\end{equation}
+
+\subsection{Coefficient of Determination ($R^2$)}
+The coefficient of determination ($R^2$) measures the proportion of variance in the dependent variable that is predictable from the independent variables.
+
+\begin{equation}
+R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
+{\sum_{i=1}^{n} (y_i - \bar{y})^2}
+\end{equation}
+
+where $\bar{y}$ represents the mean of the actual values.
+
+%\subsection{Mean Absolute Percentage Error (MAPE)}
+%Mean Absolute Percentage Error (MAPE) expresses the prediction error as a percentage of the actual values.
+
+%\begin{equation}
+%MAPE = \frac{100}{n} \sum_{i=1}^{n} \left| \frac{y_i - \hat{y}_i}{y_i} \right|
+%\end{equation}
+
+\newpage
+
+\chapter{Results and Discussion}
+
+% Add your experiment results, graphs, and observations.
+
+%This chapter presents the experimental results obtained after testing the model. It includes performance graphs, accuracy scores, confusion matrices, and a comparative discussion with existing methods.
+
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=0.8\textwidth]{results_graph.png}
+%\caption{Model Performance Graph}
+%\end{figure}
+
+\section{Result Analysis}
+
+\subsection{Individual Share Result (VEDL)}
+% Analyze and interpret your results.
+\begin{table}[h]
+\centering
+\label{tab:evaluation_metrics}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Trials} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{$R^2$} \\
+\hline
+Trial 1             & 3842.42 & 61.98 & 46.62 & 0.73 \\
+Trial 2             & 2142.04 & 46.28 & 39.64 & 0.75 \\
+Trial 3             & 1110.99 & 33.33 & 24.10 & 0.92 \\
+\hline
+\end{tabular}
+\caption{Model Performance Evaluation}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{Images/Individual Stock Prediction.png}
+\caption{Individual Stock Prediction (VEDL)}
+\end{figure}
+
+\newpage
+\subsection{Sector Wise Result}
+% Analyze and interpret your results.
+\begin{table}[h]
+\centering
+\label{tab:evaluation_metrics}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Sectors} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{$R^2$} \\
+\hline
+Basic Materials         &   54127.5815  &	232.6534     &   134.548   &   0.9744      \\
+Communication Services  &   39820.3549	&   199.5504     &   82.8376   &   0.9385      \\
+Consumer Cyclical       &   116131002.9 &   10776.4096   &   1867.6738 &   0.5554      \\
+Consumer Defensive      &   37775.4938  &   194.3592     &   179.4476  &   0.816       \\
+Energy	                &    1851.8641  &   43.0333      &   29.2189   &   0.9646      \\
+Financial Services      &   33951.4956  &   184.2593     &   161.8281  &   0.9608      \\
+Healthcare              &   161519.4446 &   401.8948     &	116.9218   &   0.9718      \\
+Industrials             &   710198.3989 &   842.7327     &   801.3894  &   0.8177      \\
+Real Estate             &   2991.2171   &   54.692       &   37.5018   &   0.9877      \\
+Technology              &   2429128.579 &   1558.5662    &   510.5046  &   0.7563      \\
+Utilities               &   13956.3     &   118.1368     &   69.6904   &   0.9407      \\
+\hline
+\end{tabular}
+\caption{Model Performance Evaluation}
+\end{table}
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Basic Material.png}
+\caption{Basic Materials}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Communication Services.png}
+\caption{Communication Services}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Consumer Cyclical.png}
+\caption{Consumer Cyclical}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Consumer Defensive.png}
+\caption{Consumer Defensive}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Energy.png}
+\caption{Energy}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Financial Services.png}
+\caption{Financial Services}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Health Care.png}
+\caption{Healthcare}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Industrials.png}
+\caption{Industrials}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Real Estate.png}
+\caption{Real Estate}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Technology.png}
+\caption{Technology}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{Images/Utilities.png}
+\caption{Utilities}
+\end{minipage}
+\hfill
+\end{figure}
+
+
+\newpage
+
+\chapter{Conclusion and Future Work}
+
+This chapter summarizes the outcomes of the project, the conclusions drawn, and suggests directions for future work.
+
+\section{Conclusion}
+% Summarize your project outcomes.
+
+\section{Future Work}
+% Suggest possible future improvements or extensions.
+
+\newpage
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}

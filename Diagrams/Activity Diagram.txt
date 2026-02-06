@@ -1,0 +1,49 @@
+@startuml
+start
+
+:Collect Historical Stock Data;
+note right
+Sources:
+- NSE Tools
+- NSE India API
+- yFinance
+- CSV Upload
+end note
+
+:Store Raw Data in Database;
+
+:Data Preprocessing;
+note right
+- Handle missing values
+- Normalize data
+- Remove outliers
+end note
+
+:Feature Engineering;
+note right
+- OHLCV features
+- Moving Averages
+- Volatility indicators
+end note
+
+:Create Time-Series Sequences;
+
+:Train Deep Learning Model;
+note right
+Models:
+- LSTM
+- CNN-LSTM
+- GRU
+- Transformer
+end note
+
+:Validate Model Performance;
+
+:Predict Next-Day Closing Price;
+
+:Store Predictions;
+
+:Visualize Results;
+
+stop
+@enduml
