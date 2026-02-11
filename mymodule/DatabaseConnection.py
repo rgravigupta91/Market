@@ -131,8 +131,7 @@ class DBConnection:
         if schema is None:
             schema = os.environ['database']
         match os.environ['dbserver']:
-            case 'mysqlserver':
-                self.connection = SqlServerHandler()                    
+            case 'mysqlserver':                    
                 self.connection = pymysql.connect(
                     host        = os.environ['dbhost'],
                     user        = os.environ['dbuser'],
@@ -140,11 +139,10 @@ class DBConnection:
                     database    = schema,
                     cursorclass = pymysql.cursors.DictCursor
                         )
-                self.cursor = self.connection.cursor()
-            case 'csv':
-                self.connection = ''
             case _:
                 raise Exception('Database not configured')
+        
+        self.cursor = self.connection.cursor()
 
     
     def __del__(self):
@@ -160,7 +158,7 @@ class DBConnection:
 
 
 
-class SqlServerHandler1(DBConnection):
+class CRUD(DBConnection):
     def __init__(self, tablename:str, schema:str = None):
         super().__init__(schema=schema)
         self.tablename = tablename
@@ -219,23 +217,4 @@ class SqlServerHandler1(DBConnection):
         self.cursor.execute(self.sql_delete, values)
         self.connection.commit()
     def upsert(self, data):
-        pass
-
-class CRUD(SqlServerHandler):
-    def __init__(self, tablename:str, schema:str = None):
-        super().__init__(self, tablename=tablename, schema=schema)
-            
-    def Create(self, df):
-        pass
-
-    def Read(self, where:str = None):
-        pass
-
-    def Update(self, data):
-        pass
-
-    def delete(self, data):
         pass 
-
-    def upsert(self, data):
-        pass
