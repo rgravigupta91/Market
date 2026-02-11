@@ -33,7 +33,8 @@ class DBHandlerInterface(ABC):
 class SqlServerHandler(DBHandlerInterface):
     def __init__(self, tablename:str, schema:str = None):
         super().__init__(tablename=tablename, schema=schema)
-        
+        if schema is None:
+            schema = os.environ['database']
         self.connection = pymysql.connect(
                     host        = os.environ['dbhost'],
                     user        = os.environ['dbuser'],
@@ -88,11 +89,11 @@ class SqlServerHandler(DBHandlerInterface):
         values = data
         self.cursor.execute(self.sql_update, values)
         self.connection.commit()
-    def delete(self, data):
+    def Delete(self, data):
         values = data
         self.cursor.execute(self.sql_delete, values)
         self.connection.commit()
-    def upsert(self, data):
+    def Upsert(self, data):
         pass
 
 class CSVHandler(DBHandlerInterface):
