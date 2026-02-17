@@ -6,7 +6,9 @@ from sklearn.preprocessing      import MinMaxScaler
 from tensorflow.keras.models    import Sequential, Model
 from tensorflow.keras.layers    import LSTM, Dense, Dropout, Layer, LayerNormalization, MultiHeadAttention, Input, GlobalAveragePooling1D
 from tensorflow.keras.callbacks import EarlyStopping
+from keras.saving import register_keras_serializable
 
+@register_keras_serializable()
 class PositionalEncoding(Layer):
     def __init__(self, sequence_len, d_model, **kwargs):
         super().__init__(**kwargs)
@@ -35,6 +37,8 @@ class PositionalEncoding(Layer):
         })
         return config
 
+
+@register_keras_serializable()
 class TransformerEncoder(tf.keras.layers.Layer):
     def __init__(self, embed_dim, num_heads, ff_dim, rate=0.1, **kwargs):
         super().__init__(**kwargs)

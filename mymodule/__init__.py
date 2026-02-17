@@ -2,9 +2,10 @@
 from dotenv import load_dotenv
 from mymodule.DatabaseConnection import CRUD, DBConnectionFactory, CSVHandler, SqlServerHandler
 from mymodule.Range import RangeParser, RangeTable
+from mymodule.Pipeline import ColumnSelector, SequenceBuilder, TransformerRegressor, DataFrameConverter
 load_dotenv()
 
-__all__ = ["CRUD", "RangeParser", "RangeTable", "DBConnectionFactory", "CSVHandler", "SqlServerHandler"]
+__all__ = ["CRUD", "RangeParser", "RangeTable", "DBConnectionFactory", "CSVHandler", "SqlServerHandler", "ColumnSelector", "SequenceBuilder", "TransformerRegressor", "DataFrameConverter"]
 
 class update_ticker():
     def __init__(self):
