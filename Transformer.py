@@ -6,7 +6,7 @@ from sklearn.preprocessing      import MinMaxScaler
 from tensorflow.keras.models    import Sequential, Model
 from tensorflow.keras.layers    import LSTM, Dense, Dropout, Layer, LayerNormalization, MultiHeadAttention, Input, GlobalAveragePooling1D
 from tensorflow.keras.callbacks import EarlyStopping
-from keras.saving import register_keras_serializable
+from keras.saving               import register_keras_serializable
 
 @register_keras_serializable()
 class PositionalEncoding(Layer):
